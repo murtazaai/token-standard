@@ -8,36 +8,36 @@ mod survey {
     /// to add new static storage fields to your contract.
     #[ink(storage)]
     pub struct Survey {
-        /// Stores a single `bool` value on the storage.
-        value: bool,
+        /// Stores a single `u32` value on the storage.
+        value: u32,
     }
 
     impl Survey {
-        /// Constructor that initializes the `bool` value to the given `init_value`.
+        /// Constructor that initializes the `u32` value to the given `init_value`.
         #[ink(constructor)]
-        pub fn new(init_value: bool) -> Self {
+        pub fn new(init_value: u32) -> Self {
             Self { value: init_value }
         }
 
-        /// Constructor that initializes the `bool` value to `false`.
+        /// Constructor that initializes the `u32` value to `0`.
         ///
         /// Constructors can delegate to other constructors.
         #[ink(constructor)]
         pub fn default() -> Self {
-            Self::new(Default::default())
+            Self::new(0)
         }
 
         /// A message that can be called on instantiated contracts.
-        /// This one flips the value of the stored `bool` from `true`
-        /// to `false` and vice versa.
+        /// This one flips the value of the stored `u32` from `0`
+        /// to `0` and vice versa.
         #[ink(message)]
-        pub fn flip(&mut self) {
-            self.value = !self.value;
+        pub fn set(&mut self, value: u32) {
+            self.value = value;
         }
 
-        /// Simply returns the current value of our `bool`.
+        /// Simply returns the current value of our `u32`.
         #[ink(message)]
-        pub fn get(&self) -> bool {
+        pub fn get(&self) -> u32 {
             self.value
         }
     }
@@ -54,16 +54,16 @@ mod survey {
         #[ink::test]
         fn default_works() {
             let survey = Survey::default();
-            assert_eq!(survey.get(), false);
+            assert_eq!(survey.get(), 0);
         }
 
         /// We test a simple use case of our contract.
         #[ink::test]
         fn it_works() {
-            let mut survey = Survey::new(false);
-            assert_eq!(survey.get(), false);
-            survey.flip();
-            assert_eq!(survey.get(), true);
+            let mut survey = Survey::new(0);
+            assert_eq!(survey.get(), 0);
+            survey.set(0);
+            assert_eq!(survey.get(), 0);
         }
     }
 
@@ -82,7 +82,7 @@ mod survey {
         use ink_e2e::build_message;
 
         /// The End-to-End test `Result` type.
-        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+        type E2EResult = std::result::Result<u32, Box<dyn std::error::Error>>;
 
         /// We test that we can upload and instantiate the contract using its default constructor.
         #[ink_e2e::test]
@@ -101,7 +101,7 @@ mod survey {
             let get = build_message::<SurveyRef>(contract_account_id.clone())
                 .call(|survey| survey.get());
             let get_result = client.call_dry_run(&ink_e2e::alice(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), false));
+            assert!(matches!(get_result.return_value(), 0));
 
             Ok(())
         }
@@ -110,7 +110,7 @@ mod survey {
         #[ink_e2e::test]
         async fn it_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
             // Given
-            let constructor = SurveyRef::new(false);
+            let constructor = SurveyRef::new(0);
             let contract_account_id = client
                 .instantiate("survey", &ink_e2e::bob(), constructor, 0, None)
                 .await
@@ -120,21 +120,21 @@ mod survey {
             let get = build_message::<SurveyRef>(contract_account_id.clone())
                 .call(|survey| survey.get());
             let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), false));
+            assert!(matches!(get_result.return_value(), 0));
 
             // When
-            let flip = build_message::<SurveyRef>(contract_account_id.clone())
-                .call(|survey| survey.flip());
+            let set = build_message::<SurveyRef>(contract_account_id.clone())
+                .call(|survey| survey.set());
             let _flip_result = client
-                .call(&ink_e2e::bob(), flip, 0, None)
+                .call(&ink_e2e::bob(), set, 0, None)
                 .await
-                .expect("flip failed");
+                .expect("set failed");
 
             // Then
             let get = build_message::<SurveyRef>(contract_account_id.clone())
                 .call(|survey| survey.get());
             let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), true));
+            assert!(matches!(get_result.return_value(), 0));
 
             Ok(())
         }
