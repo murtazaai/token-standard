@@ -8,7 +8,8 @@ edition = "2021"
 [workspace]
 members = [
     "ca",
-    "erc20"
+    "erc721",
+    "survey"
 ]
 
 [dependencies]
