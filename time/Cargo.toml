@@ -1,17 +1,10 @@
 [package]
-name = "happy"
+name = "hop-next"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[workspace]
-members = [
-    "ca",
-    "erc20",
-    "erc721",
-    "survey",
-    "time"
-]
-
 [dependencies]
+time = "0.3.21"
+regex = "1.8.1"
