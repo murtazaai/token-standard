@@ -1,4 +1,4 @@
-# Tokens
+# Token standards.
 
 This project contains the following member projects:
 
