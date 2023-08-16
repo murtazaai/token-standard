@@ -1,10 +1,10 @@
-# Hop Next
+# Tokens
 
-This project contains following member projects:
+This project contains the following member projects:
 
 * Certificate authority (X.509)
 * ERC20
 * ERC721
-* survey
+* Survey
 
 
