@@ -7,4 +7,10 @@ This project contains the following member projects:
 * ERC721
 * Survey
 
+## 👤 Author
 
+**Murtaza Ali Imtiaz**
+
+- LinkedIn: [LinkedIn](https://linkedin.com/in/murtazai)
+- GitHub: [@murtazaai](https://github.com/murtazaai)
+- Portfolio: [murtazai.com](https://murtazai.com)
